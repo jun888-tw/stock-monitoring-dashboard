@@ -41,6 +41,11 @@ DEFAULT_STOCKS = {
     "AMD": "AMD",
     "亞馬遜 (AMZN)": "AMZN",
 "特斯拉 (TSLA)": "TSLA",
+    "廣達 (2382)": "2382.TW",
+    "景碩 (3189)": "3189.TW",
+    "欣興 (3037)": "3037.TW",
+    "南電 (8046)": "8046.TW",
+    "國巨 (2327)": "2327.TW",
 }
 
 selected_labels = st.sidebar.multiselect(
