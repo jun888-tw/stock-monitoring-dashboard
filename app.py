@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide",
 )
 
-st.title("⚡ 持股估值與雷達儀表板")
+st.title("⚡ 持股估值與雷達")
 
 # 1. 側邊欄設定與 API Key 安全讀取（相容本機與雲端環境）
 api_key = ""
