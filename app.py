@@ -146,7 +146,7 @@ if st.button("🚀 執行 Gemini 深度分析"):
     st.error("請先在左側邊欄輸入你的 Gemini API Key！")
   else:
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-2.0-flash")
+    model = genai.GenerativeModel("gemini-3.5-flash")
 
     with st.spinner(f"Gemini 正在分析 {target_stock} 中..."):
       prompt = f"""
