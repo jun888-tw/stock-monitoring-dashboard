@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide",
 )
 
-st.title("⚡ 持股估值與雷達")
+st.title("⚡ 持股估值雷達")
 
 # 1. 側邊欄設定與 API Key 安全讀取（相容本機與雲端環境）
 api_key = ""
@@ -135,7 +135,7 @@ if table_data:
       "毛利率",
       "估值狀態",
   ]]
-  st.subheader("📊 核心持股估值與狀態總覽")
+  st.subheader("📊 估值與狀態總覽")
   st.dataframe(df, use_container_width=True)
 
 st.divider()
