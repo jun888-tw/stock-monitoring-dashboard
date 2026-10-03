@@ -136,7 +136,7 @@ if table_data:
       "毛利率",
       "估值狀態",
   ]]
-  st.subheader("📊 估值與狀態總覽")
+  st.subheader("📊 估值狀態")
   st.dataframe(df, use_container_width=True)
 
 st.divider()
