@@ -74,47 +74,57 @@ selected_labels = st.sidebar.multiselect(
 )
 
 
-# 2. 數據抓取與估值燈號判斷
 @st.cache_data(ttl=1800)
 def fetch_stock_data(ticker_code):
-  try:
-    data = yf.Ticker(ticker_code).info
-    price = data.get("currentPrice") or data.get("regularMarketPrice") or "N/A"
-    f_pe = data.get("forwardPE", "N/A")
-    t_pe = data.get("trailingPE", "N/A")
-    margin = data.get("grossMargins", "N/A")
+    try:
+        data = yf.Ticker(ticker_code).info
+        price = data.get("currentPrice") or data.get("regularMarketPrice") or "N/A"
+        
+        # 取得數據
+        f_pe = data.get("forwardPE")
+        t_pe = data.get("trailingPE")
+        margin = data.get("grossMargins")
 
-    if margin != "N/A":
-      margin = f"{float(margin) * 100:.1f}%"
+        # 1. 嚴謹處理 Forward PE (排除 None, NaN, <= 0 的無效值)
+        if f_pe is not None and isinstance(f_pe, (int, float)) and f_pe > 0:
+            f_pe = round(f_pe, 2)
+            if f_pe < 18:
+                status = "🟢 估值偏低 (加碼區)"
+            elif 18 <= f_pe <= 30:
+                status = "🟡 估值合理"
+            else:
+                status = "🔴 估值偏高"
+        else:
+            f_pe = "N/A"
+            status = "⚪ 數據不足"
 
-    # 簡單估值燈號判斷
-    status = "⚪ 數據不足"
-    if isinstance(f_pe, (int, float)):
-      f_pe = round(f_pe, 2)
-      if f_pe < 18:
-        status = "🟢 估值偏低 (加碼區)"
-      elif 18 <= f_pe <= 30:
-        status = "🟡 估值合理"
-      else:
-        status = "🔴 估值偏高"
+        # 2. 處理 Trailing PE
+        if t_pe is not None and isinstance(t_pe, (int, float)) and t_pe > 0:
+            t_pe = round(t_pe, 2)
+        else:
+            t_pe = "N/A"
 
-    return {
-        "現價": price,
-        "Forward PE": f_pe,
-        "Trailing PE": (
-            round(t_pe, 2) if isinstance(t_pe, (int, float)) else t_pe
-        ),
-        "毛利率": margin,
-        "估值狀態": status,
-    }
-  except Exception:
-    return {
-        "現價": "N/A",
-        "Forward PE": "N/A",
-        "Trailing PE": "N/A",
-        "毛利率": "N/A",
-        "估值狀態": "⚪ 異常",
-    }
+        # 3. 處理毛利率
+        if margin is not None and isinstance(margin, (int, float)):
+            margin = f"{float(margin) * 100:.1f}%"
+        else:
+            margin = "N/A"
+
+        return {
+            "現價": price,
+            "Forward PE": f_pe,
+            "Trailing PE": t_pe,
+            "毛利率": margin,
+            "估值狀態": status,
+        }
+    except Exception:
+        return {
+            "現價": "N/A",
+            "Forward PE": "N/A",
+            "Trailing PE": "N/A",
+            "毛利率": "N/A",
+            "估值狀態": "⚪ 異常",
+        }
 
 
 table_data = []
